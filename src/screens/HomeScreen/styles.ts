@@ -10,16 +10,6 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.grey,
     backgroundColor: Colors.white,
   },
-  searchInputView: {
-    flexDirection: "row",
-    backgroundColor: Colors.platinum,
-    marginHorizontal: 15,
-    height: 40,
-    borderRadius: 8,
-    marginTop: 10,
-    alignItems: "center",
-    paddingLeft: 10,
-  },
   filterActionView: {
     flexDirection: "row",
     marginHorizontal: 15,

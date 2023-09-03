@@ -8,6 +8,7 @@ import {
   Dimensions,
 } from "react-native";
 import MainProducts from "../../components/MainProducts";
+import SearchInput from "../../components/SearchInput";
 import { Search } from "../../../assets/icons";
 import Colors from "../../theme";
 import styles from "./styles";
@@ -16,21 +17,21 @@ import axios from "axios";
 import { Product } from "../../models";
 
 const { width, height } = Dimensions.get("window");
+type filterModel = {
+  sortBy: number;
+  brand: string;
+  model: string;
+};
 const index = () => {
   const [products, setProducts] = useState<Product[]>();
+  const [allProducts, setAllProducts] = useState<Product[]>();
   const [showFilter, setShowFilter] = useState(false);
-  const [text, setText] = useState<string>("");
-
-  type filterModel = {
-    sortBy: number;
-    brand: string;
-    model: string;
-  };
 
   const getPostsFromServer = async () => {
     await axios
       .get("https://5fc9346b2af77700165ae514.mockapi.io/products")
       .then((response) => {
+        setAllProducts(response.data);
         setProducts(response.data);
       })
       .catch((error) => {
@@ -42,14 +43,16 @@ const index = () => {
     getPostsFromServer();
   }, []);
 
-  const searchProduct = () => {
-    if (products && text !== "") {
-      const filteredProducts = products.filter((p) => {
-        return p.name.toLowerCase() === text.toLowerCase();
+  const searchProduct = (text: string) => {
+    console.log("text: ", text, allProducts);
+    if (text !== "") {
+      const filteredProducts = allProducts.filter((p) => {
+        return p.name.toLowerCase().includes(text.toLowerCase());
       });
       setProducts(filteredProducts);
       console.log("filtered: ", filteredProducts, text);
     }
+    else setProducts(allProducts);
   };
 
   const setFilter = (filterData: filterModel) => {
@@ -75,28 +78,7 @@ const index = () => {
   return (
     <View>
       <View style={styles.filterView}>
-        <View style={styles.searchInputView}>
-          <TouchableOpacity onPress={() => searchProduct()}>
-            <Search
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill={Colors.grey}
-            />
-          </TouchableOpacity>
-          <TextInput
-            value={text}
-            onChangeText={(value) => setText(value)}
-            style={{
-              marginLeft: 5,
-              fontSize: 18,
-              marginRight: 5,
-              width: "88%",
-            }}
-            placeholder="Search"
-            placeholderTextColor={Colors.darkGrey}
-          />
-        </View>
+        <SearchInput searchProduct={searchProduct} />
         <View style={styles.filterActionView}>
           <View style={{ flex: 1 }}>
             <Text style={styles.textFilters}>Filters:</Text>

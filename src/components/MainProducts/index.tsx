@@ -39,7 +39,7 @@ const index = ({ products }: { products: Product[] }) => {
               //   />
               // )
               products
-                .splice(0, 12)
+                .slice(0, 12)
                 .map((item) => (
                   <ProductItem isFav={false} key={item.id} item={item} />
                 ))
